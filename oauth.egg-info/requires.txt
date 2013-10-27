@@ -1,0 +1,7 @@
+setuptools
+setuptools_git
+-e git://github.com/daaku/python-urlencoding.git@a40fde7d36a127fad1e2d29ce55fb0ace27a93d1#egg=urlencoding-master
+
+
+[RSA]
+tlslite
