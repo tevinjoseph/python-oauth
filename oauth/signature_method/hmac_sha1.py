@@ -1,5 +1,4 @@
 # coding: utf-8
-from oauth import escape
 from oauth.signature_method.base import OAuthSignatureMethod
 import binascii
 import hashlib
@@ -17,5 +16,6 @@ class OAuthSignatureMethod_HMAC_SHA1(OAuthSignatureMethod):
 
     @property
     def signature(self):
-        hashed = hmac.new(self.base_secrets, self.base_string, hashlib.sha1)
+        hashed = hmac.new(self.base_secrets.encode('ascii'),
+            self.base_string, hashlib.sha1)
         return binascii.b2a_base64(hashed.digest())[:-1]

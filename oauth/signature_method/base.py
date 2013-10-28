@@ -81,13 +81,13 @@ class OAuthSignatureMethod(object):
         """
 
         key = ''
-        if self.consumer and 'oauth_token_secret' in self.consumer:
-            key += escape(self.consumer['oauth_token_secret'])
+        if self.consumer and 'oauth_consumer_secret' in self.consumer:
+            key += escape(self.consumer['oauth_consumer_secret'])
         key += '&'
         if self.token and 'oauth_token_secret' in self.token:
             key += escape(self.token['oauth_token_secret'])
 
-        return key
+        return key.encode('ascii')
 
     @property
     def base_string(self):
