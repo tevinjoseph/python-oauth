@@ -189,7 +189,7 @@ class OAuthRequest(object):
         sig = signature_method(self, consumer, token)
 
         self.params.update({
-            'oauth_consumer_key': consumer['oauth_token'],
+            'oauth_consumer_key': consumer['oauth_consumer_key'],
             'oauth_nonce': ''.join([str(random.randint(0, 9)) for i in range(self.nonce_length)]),
             'oauth_signature_method': sig.name,
             'oauth_timestamp': int(time.time()),
@@ -199,6 +199,7 @@ class OAuthRequest(object):
             self.params['oauth_token'] = token['oauth_token']
 
         self.params['oauth_signature'] = sig.signature
+        return sig.signature
 
     def to_header(self, realm=None):
         """
@@ -262,6 +263,8 @@ class OAuthRequest(object):
         """
         params = self.params.copy()
         params.pop('oauth_signature', None)
+        #don't know it is correct
+        params.pop('oauth_nonce', None)
         return compose_qs(params, sort=True)
 
     @staticmethod
