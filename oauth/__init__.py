@@ -144,7 +144,7 @@ class OAuthRequest(object):
 
             sig.validate_signature(self.params['oauth_signature'])
         except KeyError:
-            raise OAuthError('Missing required parameter')
+            raise OAuthError('Missing required parameter. oauth_timestamp is missing in the request.')
 
     def sign_request(self, signature_method, consumer, token=None):
         """
