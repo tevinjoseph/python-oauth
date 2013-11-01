@@ -275,8 +275,6 @@ class OAuthRequest(object):
         """
         params = self.params.copy()
         params.pop('oauth_signature', None)
-        # don't know it is correct
-        params.pop('oauth_nonce', None)
         return compose_qs(params, sort=True)
 
     @staticmethod
