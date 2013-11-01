@@ -1,8 +1,8 @@
 Metadata-Version: 1.1
 Name: oauth
-Version: 0.0.1
+Version: 0.0.3
 Summary: OAuth Signature Generation/Validation
-Home-page: https://github.com/rhooper/python-oauth/
+Home-page: https://code.daaku.org/python-oauth/
 Author: Naitik Shah
 Author-email: n@daaku.org
 License: UNKNOWN

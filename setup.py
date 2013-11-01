@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='oauth',
-    version='0.0.2',
+    version='0.0.3',
     description='OAuth Signature Generation/Validation',
     author='Naitik Shah',
     author_email='n@daaku.org',
