@@ -11,14 +11,18 @@ OAUTH_VERSION = '1.0'
 TIMESTAMP_THRESHOLD = 300
 NONCE_LENGTH = 10
 
+
 class OAuthError(RuntimeError):
+
     """
     Generic OAuthError for all error cases.
 
     """
     pass
 
+
 class OAuthRequest(object):
+
     """
     Represents outgoing or incoming requests. Provides the ability to sign
     outgoing requests (`sign_request <#oauth.OAuthRequest.sign_request>`_), and
@@ -52,8 +56,8 @@ class OAuthRequest(object):
     """
 
     def __init__(self, url, http_method='GET', params=None, headers={},
-            version=OAUTH_VERSION, timestamp_threshold=TIMESTAMP_THRESHOLD,
-            nonce_length=NONCE_LENGTH):
+                 version=OAUTH_VERSION, timestamp_threshold=TIMESTAMP_THRESHOLD,
+                 nonce_length=NONCE_LENGTH):
         if params and not isinstance(params, collections.Mapping):
             # if its not a mapping, it must be a string
             params = parse_qs(params)
@@ -65,15 +69,17 @@ class OAuthRequest(object):
             # check that the authorization header is OAuth
             if auth_header.index('OAuth') > -1:
                 try:
-                    header_params = OAuthRequest._parse_auth_header(auth_header)
+                    header_params = OAuthRequest._parse_auth_header(
+                        auth_header)
                     params.update(header_params)
                 except ValueError:
-                    raise OAuthError('Unable to parse OAuth parameters from Authorization header.')
+                    raise OAuthError(
+                        'Unable to parse OAuth parameters from Authorization header.')
 
         # URL parameters
         parts = urlparse.urlparse(url)
         url = '%s://%s%s' % (parts.scheme, parts.netloc, parts.path)
-        params.update(parse_qs(parts.query)) #FIXME should this be a merge?
+        params.update(parse_qs(parts.query))  # FIXME should this be a merge?
 
         self.http_method = http_method.upper()
         self.url = url
@@ -137,14 +143,18 @@ class OAuthRequest(object):
             now = int(time.time())
             off_by = abs(now - timestamp)
             if off_by > self.timestamp_threshold:
-                raise OAuthError('Expired timestamp: Given Time: %d | Server Time: %s | Threshold: %d.' % (timestamp, now, self.timestamp_threshold))
+                raise OAuthError(
+                    'Expired timestamp: Given Time: %d | Server Time: %s | Threshold: %d.' %
+                    (timestamp, now, self.timestamp_threshold))
 
             if self.params['oauth_signature_method'] != sig.name:
-                raise OAuthError('Unexpected oauth_signature_method. Was expecting %s.' % sig.name)
+                raise OAuthError(
+                    'Unexpected oauth_signature_method. Was expecting %s.' % sig.name)
 
             sig.validate_signature(self.params['oauth_signature'])
-        except KeyError:
-            raise OAuthError('Missing required parameter')
+        except KeyError as e:
+            raise OAuthError(
+                'Missing required parameter %s is missing.' % e.message)
 
     def sign_request(self, signature_method, consumer, token=None):
         """
@@ -189,7 +199,7 @@ class OAuthRequest(object):
         sig = signature_method(self, consumer, token)
 
         self.params.update({
-            'oauth_consumer_key': consumer['oauth_token'],
+            'oauth_consumer_key': consumer['oauth_consumer_key'],
             'oauth_nonce': ''.join([str(random.randint(0, 9)) for i in range(self.nonce_length)]),
             'oauth_signature_method': sig.name,
             'oauth_timestamp': int(time.time()),
@@ -199,6 +209,7 @@ class OAuthRequest(object):
             self.params['oauth_token'] = token['oauth_token']
 
         self.params['oauth_signature'] = sig.signature
+        return sig.signature
 
     def to_header(self, realm=None):
         """
@@ -216,7 +227,8 @@ class OAuthRequest(object):
         auth_header = 'OAuth '
         if realm:
             auth_header += 'realm="%s",' % realm
-        oauth_params = dict([(k, v) for k, v in self.params.iteritems() if k[:6] == 'oauth_'])
+        oauth_params = dict([(k, v)
+                            for k, v in self.params.iteritems() if k[:6] == 'oauth_'])
         auth_header += compose_qs(oauth_params, pattern='%s="%s"', join=',')
         return auth_header
 
@@ -249,7 +261,8 @@ class OAuthRequest(object):
         if include_oauth:
             params = self.params
         else:
-            params = dict([(k, v) for k, v in self.params.iteritems() if k[:6] != 'oauth_'])
+            params = dict([(k, v)
+                          for k, v in self.params.iteritems() if k[:6] != 'oauth_'])
         return compose_qs(params)
 
     @property
@@ -262,6 +275,8 @@ class OAuthRequest(object):
         """
         params = self.params.copy()
         params.pop('oauth_signature', None)
+        # don't know it is correct
+        params.pop('oauth_nonce', None)
         return compose_qs(params, sort=True)
 
     @staticmethod
