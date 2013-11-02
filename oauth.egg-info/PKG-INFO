@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: oauth
-Version: 0.0.4
+Version: 0.0.5
 Summary: OAuth Signature Generation/Validation
 Home-page: https://code.daaku.org/python-oauth/
 Author: Naitik Shah

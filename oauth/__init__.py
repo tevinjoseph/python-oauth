@@ -21,6 +21,20 @@ class OAuthError(RuntimeError):
     pass
 
 
+class OAuthMissingParameterError(RuntimeError):
+    
+    """
+    Error class for missing parameters.
+    """
+
+    '''parameter that was missing'''
+    parameter_name = None
+
+    def __init__(self, message, parameter_name):
+        self.parameter_name = parameter_name
+        super(OAuthMissingParameterError, self).__init__(message)
+
+
 class OAuthRequest(object):
 
     """
@@ -154,7 +168,7 @@ class OAuthRequest(object):
             sig.validate_signature(self.params['oauth_signature'])
         except KeyError as e:
             raise OAuthError(
-                'Missing required parameter %s is missing.' % e.message)
+                'Missing required parameter \'%s\'.' % e.message, e.message)
 
     def sign_request(self, signature_method, consumer, token=None):
         """
