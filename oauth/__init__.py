@@ -167,8 +167,8 @@ class OAuthRequest(object):
 
             sig.validate_signature(self.params['oauth_signature'])
         except KeyError as e:
-            raise OAuthError(
-                'Missing required parameter \'%s\'.' % e.message, e.message)
+            raise OAuthMissingParameterError(
+                message=e.message, parameter_name=e.message)
 
     def sign_request(self, signature_method, consumer, token=None):
         """
